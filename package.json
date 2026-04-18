@@ -1,15 +1,24 @@
 {
   "name": "resume-builder",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n client,api -c blue,green \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "vite",
+    "dev:server": "npm run dev --prefix server",
     "build": "vite build",
+    "start": "cross-env NODE_ENV=production node server/src/index.js",
+    "start:pm2": "pm2 start ecosystem.config.cjs --env production",
+    "stop:pm2": "pm2 stop resume-builder && pm2 delete resume-builder",
+    "pm2:logs": "pm2 logs resume-builder",
+    "backup:sqlite": "node scripts/backup-sqlite.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:migrate": "npm run db:migrate --prefix server"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.14.1"
@@ -19,10 +28,13 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "pm2": "^6.0.14",
     "vite": "^8.0.4"
   }
 }

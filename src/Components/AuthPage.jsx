@@ -24,10 +24,10 @@ const AuthPage = () => {
         {isLogin ? <LoginForm /> : <SignupForm />}
 
         <p className="switch-text">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <span onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? " Sign up" : " Login"}
-          </span>
+          {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+          <button type="button" className="auth-switch-btn" onClick={() => setIsLogin(!isLogin)}>
+            {isLogin ? 'Sign up' : 'Login'}
+          </button>
         </p>
       </div>
 
