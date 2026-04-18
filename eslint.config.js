@@ -4,10 +4,13 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
+const sharedUnused = ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' }]
+
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'server/node_modules']),
   {
     files: ['**/*.{js,jsx}'],
+    ignores: ['server/**'],
     extends: [
       js.configs.recommended,
       reactHooks.configs.flat.recommended,
@@ -23,7 +26,22 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': sharedUnused,
+    },
+  },
+  {
+    files: ['server/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.node,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': sharedUnused,
     },
   },
 ])

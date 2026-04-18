@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  address      String?
+  createdAt    DateTime @default(now())
+  resumes      Resume[]
+}
+
+model Resume {
+  id                   String   @id @default(cuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title                String
+  resumeType           String
+  objective            String?
+  professionalSummary  String?
+  displayName          String?
+  displayEmail         String?
+  displayPhone         String?
+  displayAddress       String?
+  linkedInUrl          String?
+  githubUrl            String?
+  creationDate         DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  educations       Education[]
+  experiences      Experience[]
+  skills           Skill[]
+  certifications   Certification[]
+  projects         Project[]
+  internships      Internship[]
+  achievements     Achievement[]
+  extracurriculars ExtraCurricular[]
+}
+
+model Education {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  degree      String
+  institution String
+  startDate   String?
+  endDate     String?
+}
+
+model Experience {
+  id               String  @id @default(cuid())
+  resumeId         String
+  resume           Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  jobTitle         String
+  company          String
+  location         String?
+  startDate        String?
+  endDate          String?
+  responsibilities String
+}
+
+model Skill {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  skillName   String
+  proficiency String?
+}
+
+model Certification {
+  id                    String  @id @default(cuid())
+  resumeId              String
+  resume                Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  certificationName     String
+  issuingOrganization   String
+  issueDate             String?
+  expiryDate            String?
+}
+
+model Project {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  link        String?
+  techStack   String?
+}
+
+model Internship {
+  id          String  @id @default(cuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  company     String
+  role        String?
+  duration    String?
+  description String?
+}
+
+model Achievement {
+  id       String @id @default(cuid())
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  content  String
+}
+
+model ExtraCurricular {
+  id       String @id @default(cuid())
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  content  String
+}

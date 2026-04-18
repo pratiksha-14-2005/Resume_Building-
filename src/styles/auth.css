@@ -52,12 +52,19 @@ body {
 }
 
 /* FORM */
+.form .label {
+  display: block;
+  margin-bottom: 0;
+}
+
 .form input {
   width: 100%;
   padding: 12px;
   margin-bottom: 15px;
   border-radius: 8px;
   border: 1px solid #ddd;
+  box-sizing: border-box;
+  font: inherit;
 }
 
 /* BUTTON */
@@ -76,12 +83,6 @@ body {
 .switch-text {
   margin-top: 15px;
   color: gray;
-}
-
-.switch-text span {
-  color: #ff4d4d;
-  cursor: pointer;
-  font-weight: bold;
 }
 
 /* 📱 MOBILE VIEW */
