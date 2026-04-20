@@ -51,6 +51,9 @@ const lineItem = z.object({
 export const resumePayloadSchema = z.object({
   title: z.string().trim().min(1).max(200),
   resumeType: resumeType,
+  designTemplate: z.string().trim().max(40).optional().nullable(),
+  designColor: z.string().trim().max(30).optional().nullable(),
+  designFont: z.string().trim().max(80).optional().nullable(),
   objective: z.string().trim().max(4000).optional().nullable(),
   professionalSummary: z.string().trim().max(4000).optional().nullable(),
   displayName: z.string().trim().min(1).max(200),

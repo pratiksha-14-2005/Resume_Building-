@@ -42,6 +42,9 @@ export function resumeToForm(resume) {
   return {
     title: resume.title ?? '',
     resumeType: resume.resumeType ?? 'FRESHER',
+    designTemplate: resume.designTemplate ?? 'classic',
+    designColor: resume.designColor ?? '#0f4c75',
+    designFont: resume.designFont ?? 'Inter, sans-serif',
     objective: resume.objective ?? '',
     professionalSummary: resume.professionalSummary ?? '',
     displayName: resume.displayName ?? '',
@@ -108,6 +111,9 @@ export function formToPayload(form) {
   return {
     title: form.title.trim(),
     resumeType: form.resumeType,
+    designTemplate: form.designTemplate || 'classic',
+    designColor: form.designColor || '#0f4c75',
+    designFont: form.designFont || 'Inter, sans-serif',
     objective: nullIfEmpty(form.objective),
     professionalSummary: nullIfEmpty(form.professionalSummary),
     displayName: form.displayName.trim(),

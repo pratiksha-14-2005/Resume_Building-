@@ -7,7 +7,10 @@ import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
 import authRoutes from './routes/auth.js'
+import aiRoutes from './routes/ai.js'
+import { prisma } from './lib/prisma.js'
 import resumeRoutes from './routes/resumes.js'
+// app.use(helmet());
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
@@ -34,7 +37,7 @@ app.use(
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'"],
         styleSrc: ["'self'"],
-        imgSrc: ["'self'", 'data:', 'blob:'],
+        imgSrc: ["'self'", 'data:', 'blob:', 'https://images.unsplash.com'],
         fontSrc: ["'self'", 'data:'],
         connectSrc: ["'self'"],
         workerSrc: ["'self'", 'blob:'],
@@ -72,10 +75,59 @@ const apiLimiter = rateLimit({
 app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api', apiLimiter)
 app.use('/api/resumes', resumeRoutes)
+app.use('/api/ai', aiRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, service: 'resume-builder-api' })
 })
+
+if (!isProduction) {
+  app.get('/api', (_req, res) => {
+    res.json({
+      ok: true,
+      message: 'API is running',
+      routes: ['/api/health', '/api/debug/users', '/api/debug/resumes'],
+    })
+  })
+
+  app.get('/api/debug/users', async (_req, res, next) => {
+    try {
+      const users = await prisma.user.findMany({
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          createdAt: true,
+        },
+      })
+      res.json({ count: users.length, users })
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  app.get('/api/debug/resumes', async (_req, res, next) => {
+    try {
+      const resumes = await prisma.resume.findMany({
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          resumeType: true,
+          userId: true,
+          displayName: true,
+          updatedAt: true,
+        },
+      })
+      res.json({ count: resumes.length, resumes })
+    } catch (error) {
+      next(error)
+    }
+  })
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 if (isProduction) {
@@ -102,7 +154,10 @@ app.use((req, res) => {
 
 app.use((err, _req, res, _next) => {
   console.error(err)
-  res.status(500).json({ error: 'Internal server error' })
+  res.status(500).json({
+    error: 'Internal server error',
+    details: isProduction ? undefined : err?.message || String(err),
+  })
 })
 
 app.listen(PORT, () => {

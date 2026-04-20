@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
 
+
+
 const router = Router()
 
 const registerSchema = z.object({

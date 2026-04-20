@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -32,6 +32,9 @@ model Resume {
   displayAddress       String?
   linkedInUrl          String?
   githubUrl            String?
+  designTemplate       String?  @default("classic")
+  designColor          String?  @default("#0f4c75")
+  designFont           String?  @default("Inter, sans-serif")
   creationDate         DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
